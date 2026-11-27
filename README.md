@@ -48,6 +48,7 @@ sequence. `h` is the first 8 hex chars of `sha256(role + "\n" + text)`.
 | key | default | meaning |
 |---|---|---|
 | `enabled` | `true` | master switch |
+| `door` / `recall` | `true` / `true` | turn each injection off independently (a host that already ships a door can keep only recall) |
 | `sessionsRoot` | `''` | session log root; empty disables recall |
 | `indexPath` | `''` | `words.jsonl` path (a directory also works) |
 | `restPath` | `''` | optional landing-point JSONL; empty hides that line |

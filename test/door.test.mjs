@@ -57,6 +57,13 @@ test('apply registers door and recall sections, cached after first render', () =
   assert.equal(calls[1].text(), '');
 });
 
+test('door can be switched off while keeping the recall slot', () => {
+  const calls = [];
+  const ctx = { inject: (_s, fn) => fn({ systemPrompt: { context: (spec) => calls.push(spec) } }) };
+  apply(ctx, { ...DEFAULTS, door: false, sessionsRoot: '' });
+  assert.deepEqual(calls.map((c) => c.name), ['whale:recall']);
+});
+
 test('apply never throws on a broken index path', () => {
   const calls = [];
   const ctx = { inject: (_s, fn) => fn({ systemPrompt: { context: (spec) => calls.push(spec) } }) };
