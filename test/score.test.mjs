@@ -42,6 +42,13 @@ test('a three-character query can hit on its single trigram', () => {
   assert.equal(passes(s, TH), true);
 });
 
+test('a single long English word can hit on its own', () => {
+  const q = grams('whale');
+  const l = grams('the whale memory plugin');
+  const s = scoreLine(q, l);
+  assert.equal(passes(s, TH), true);
+});
+
 test('empty query never passes', () => {
   const s = scoreLine(grams(''), grams('任意一句话'));
   assert.equal(passes(s, TH), false);
