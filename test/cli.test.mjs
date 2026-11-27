@@ -64,6 +64,24 @@ test('doctor reports a missing index without failing', () => {
   assert.match(d.out, /index not found/);
 });
 
+test('doctor reports index age and flags a stale index', () => {
+  const { sessions, index } = setup();
+  run(['index', '--sessions', sessions, '--out', index]);
+  const fresh = run(['doctor', '--index', index, '--max-age', '60']);
+  assert.equal(fresh.code, 0);
+  assert.match(fresh.out, /建于/);
+  assert.equal(fresh.out.includes('没重建'), false);
+
+  // 把 builtAt 拨回两小时，模拟长期没重建。
+  const metaPath = path.join(index, 'meta.json');
+  const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
+  meta.builtAt = new Date(Date.now() - 2 * 3600_000).toISOString();
+  fs.writeFileSync(metaPath, JSON.stringify(meta));
+
+  const stale = run(['doctor', '--index', index, '--max-age', '60']);
+  assert.match(stale.out, /没重建/);
+});
+
 test('query with no index exits non-zero with a clear message', () => {
   const { root } = setup();
   const q = run(['query', '装个插件', '--index', path.join(root, 'nope')]);
