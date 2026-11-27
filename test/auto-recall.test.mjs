@@ -55,6 +55,23 @@ test('recall uses the newest log when no explicit query is given', () => {
   assert.equal(text.includes('讨论了'), false);
 });
 
+test('a session log older than the pick window is not treated as current', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'whale-stale-'));
+  const sessions = path.join(root, 'sessions');
+  session(sessions, 'stale-1', '这个插件怎么装啊', Date.now() - 3600_000);
+
+  const indexPath = path.join(root, 'words.jsonl');
+  fs.writeFileSync(
+    indexPath,
+    JSON.stringify({ v: 1, session: 'old-9', seq: 3, time: '2026-11-20T01:00:00.000Z', role: 'user', text: '这个插件怎么安装', chars: 8, path: 'x' }) + '\n',
+  );
+
+  const calls = [];
+  const ctx = { inject: (_s, fn) => fn({ systemPrompt: { context: (spec) => calls.push(spec) } }) };
+  apply(ctx, { ...DEFAULTS, sessionsRoot: sessions, indexPath, door: false, sessionPickWindowMs: 60_000 });
+  assert.equal(calls[0].text(), '');
+});
+
 test('recall stays empty when session picking is off', () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'whale-off-'));
   const sessions = path.join(root, 'sessions');
