@@ -34,6 +34,14 @@ test('English tokens match', () => {
   assert.equal(passes(s, TH), true);
 });
 
+test('a three-character query can hit on its single trigram', () => {
+  const q = grams('鱼八股');
+  const l = grams('去看这个视频【DeepSeek鱼八股怎么去掉】');
+  const s = scoreLine(q, l);
+  assert.equal(s.triTotal, 1);
+  assert.equal(passes(s, TH), true);
+});
+
 test('empty query never passes', () => {
   const s = scoreLine(grams(''), grams('任意一句话'));
   assert.equal(passes(s, TH), false);
