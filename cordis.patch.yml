@@ -1,0 +1,18 @@
+# dsh bundle patch：把本插件插进 profile 的层栈。
+#
+# `name` 必须与包名一致，加载器才认得 profile 的 node_modules 里的它。
+# 全部默认值见 lib/index.js 的 DEFAULTS；这里只留注释，因为默认值里没有任何本机路径。
+- insert:
+    - id: dsh-whale-memory
+      name: 'dsh-whale-memory'
+      # config:
+      #   sessionsRoot: 'D:/DSH-data/sessions'      # 会话日志根，空 = recall 关闭
+      #   indexPath: 'D:/DSH-data/memory/index/words.jsonl'
+      #   restPath: 'D:/DSH-data/memory/rest/segments.jsonl'
+      #   doorOrder: 130
+      #   recallOrder: 132
+      #   memqCmd: 'npx dsh-whale-memory'
+      #   maxDoorBytes: 600
+      #   thresholds: { minTri: 2, minBiWithOneTri: 4, minBi: 6, minBiRatio: 0.3 }
+      #   timeZone: 'Asia/Shanghai'
+      #   debug: false
