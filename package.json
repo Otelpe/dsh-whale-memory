@@ -32,5 +32,13 @@
     "bundle": {
       "patch": "./cordis.patch.yml"
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Otelpe/dsh-whale-memory.git"
+  },
+  "homepage": "https://github.com/Otelpe/dsh-whale-memory",
+  "bugs": {
+    "url": "https://github.com/Otelpe/dsh-whale-memory/issues"
   }
 }
