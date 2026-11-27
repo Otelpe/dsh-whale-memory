@@ -96,8 +96,10 @@ test('a stale index is rebuilt in-process before recall', () => {
     autoIndexMinutes: 1,
   });
 
+  // 重建发生在第一次求值里，所以先取文本，再看磁盘。
+  const text = calls[0].text();
   assert.match(fs.readFileSync(path.join(out, 'words.jsonl'), 'utf8'), /收成独立仓库/);
-  assert.match(calls[0].text(), /log:session-cur-3#seq=1/);
+  assert.match(text, /log:session-cur-3#seq=1/);
 });
 
 test('recall stays empty when session picking is off', () => {
