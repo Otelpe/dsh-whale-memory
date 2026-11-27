@@ -57,7 +57,8 @@ sequence. `h` is the first 8 hex chars of `sha256(role + "\n" + text)`.
 | `maxDoorBytes` | `600` | door byte budget; truncation warns |
 | `maxHits` / `maxSnippetChars` | `2` / `90` | recall shape |
 | `thresholds` | `{minTri:2, minBiWithOneTri:4, minBi:6, minBiRatio:0.3}` | three parallel gates |
-| `recallQuery` | `''` | the first human line of this session, if your host can supply it |
+| `recallQuery` | `''` | explicit query for recall; empty falls back to `sessionPick` |
+| `sessionPick` | `true` | treat the most recently written session log as "this session" (same trade-off as `dsh-agent-recall`: wrong when two sessions run at once) |
 | `timeZone` | `Asia/Shanghai` | clock rendering |
 
 Every default is empty or neutral: no machine-specific path ships in this package.
