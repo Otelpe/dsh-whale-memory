@@ -1,0 +1,31 @@
+{
+  "name": "dsh-whale-memory",
+  "version": "0.1.0",
+  "description": "Pointer-based cross-session memory for DeepSeek Harness: a door in every prompt, verbatim retrieval by signed pointer. · 鲸记：把「翻回去」做成宿主自带的能力。",
+  "type": "module",
+  "main": "lib/index.js",
+  "bin": {
+    "dsh-whale-memory": "bin/dsh-whale-memory.js"
+  },
+  "files": [
+    "lib",
+    "bin",
+    "cordis.patch.yml",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "deepseek",
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "memory",
+    "recall"
+  ],
+  "license": "MIT"
+}
