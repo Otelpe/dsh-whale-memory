@@ -48,7 +48,7 @@ test('recall uses the newest log when no explicit query is given', () => {
 
   const calls = [];
   const ctx = { inject: (_s, fn) => fn({ systemPrompt: { context: (spec) => calls.push(spec) } }) };
-  apply(ctx, { ...DEFAULTS, sessionsRoot: sessions, indexPath, recallQuery: '', door: false });
+  apply(ctx, { ...DEFAULTS, sessionsRoot: sessions, indexPath, recallQuery: '', door: false, autoIndexMinutes: 0 });
 
   const text = calls[0].text();
   assert.match(text, /log:session-old-9#seq=3/);
@@ -70,6 +70,34 @@ test('a session log older than the pick window is not treated as current', () =>
   const ctx = { inject: (_s, fn) => fn({ systemPrompt: { context: (spec) => calls.push(spec) } }) };
   apply(ctx, { ...DEFAULTS, sessionsRoot: sessions, indexPath, door: false, sessionPickWindowMs: 60_000 });
   assert.equal(calls[0].text(), '');
+});
+
+test('a stale index is rebuilt in-process before recall', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'whale-rebuild-'));
+  const sessions = path.join(root, 'sessions');
+  session(sessions, 'cur-3', '把记忆收成独立仓库', Date.now());
+
+  const out = path.join(root, 'index');
+  fs.mkdirSync(out, { recursive: true });
+  fs.writeFileSync(path.join(out, 'words.jsonl'), '');
+  fs.writeFileSync(
+    path.join(out, 'meta.json'),
+    JSON.stringify({ builtAt: new Date(Date.now() - 2 * 3600_000).toISOString(), logs: 0, written: 0, skipped: 0, failed: 0, files: {} }),
+  );
+
+  const calls = [];
+  const ctx = { inject: (_s, fn) => fn({ systemPrompt: { context: (spec) => calls.push(spec) } }) };
+  apply(ctx, {
+    ...DEFAULTS,
+    sessionsRoot: sessions,
+    indexPath: path.join(out, 'words.jsonl'),
+    recallQuery: '收成独立仓库',
+    door: false,
+    autoIndexMinutes: 1,
+  });
+
+  assert.match(fs.readFileSync(path.join(out, 'words.jsonl'), 'utf8'), /收成独立仓库/);
+  assert.match(calls[0].text(), /log:session-cur-3#seq=1/);
 });
 
 test('recall stays empty when session picking is off', () => {
